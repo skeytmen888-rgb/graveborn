@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Graveborn: Until Dawn</title>
+  <link rel="preload" href="./assets/balsamiq-sans-bold-cyrillic-BEwck_UW.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="./assets/balsamiq-sans-bold-latin-BFzNRsIb.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="icon" type="image/png" href="./ui/graveborn-emblem.png" />
+  <link rel="preload" href="./assets/loading-bull-Cpy4Ut1B.webp" as="image" />
+  <!-- The Yandex build loads /sdk.js through YandexSDK.init(); web/itch builds stay standalone. -->
+  <script type="module" crossorigin src="./assets/index-C3VJ2PYK.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/babylon-core-DLU5nSyt.js">
+  <link rel="stylesheet" crossorigin href="./assets/index-C0FGpqbJ.css">
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div id="atmosphere" aria-hidden="true">
+    <div class="screen-vignette"></div>
+    <div class="screen-grain"></div>
+    <div class="screen-scan"></div>
+  </div>
+
+  <div id="damage-flash"></div>
+  <div id="heal-flash"></div>
+  <div id="horror-pulse"></div>
+  <div id="death-overlay"></div>
+  <div id="crosshair">
+    <div class="ch-top"></div>
+    <div class="ch-bottom"></div>
+    <div class="ch-left"></div>
+    <div class="ch-right"></div>
+    <div class="ch-center"></div>
+  </div>
+  <div id="hit-marker"></div>
+  <div id="fps-counter" class="hidden">60 FPS</div>
+  <div id="floating-damage-container"></div>
+  <div id="weapon-switch-banner" class="hidden">
+    <span class="wsb-icon">🔫</span>
+    <div class="wsb-info">
+      <div class="wsb-name" data-i18n="weapon_pistol">Пистолет</div>
+      <div class="wsb-sub" data-i18n="hud_weapon_equipped">ОРУЖИЕ ВЫБРАНО</div>
+    </div>
+  </div>
+
+  <div id="dmg-ring"></div>
+
+  <div id="kill-feed"></div>
+  <div id="combo" class="hidden"></div>
+
+  <canvas id="minimap" width="180" height="180" class="hidden"></canvas>
+  <div id="minimap-hint" class="minimap-hint hidden" data-i18n="hud_map_hint" data-i18n-title="hud_map_hint_title" title="Открыть тактическую карту (клавиша M)">🗺️ [M] КАРТА</div>
+
+  <div id="boss-health" class="hidden">
+    <div id="boss-name" data-i18n="hud_boss">БОСС</div>
+    <div id="boss-hp-bar"><div id="boss-hp-fill"></div></div>
+    <div id="boss-cast" class="hidden">
+      <span id="boss-cast-label" data-i18n="hud_attack">АТАКА</span>
+      <div id="boss-cast-bar"><div id="boss-cast-fill"></div></div>
+    </div>
+  </div>
+
+  <div id="sarcophagus-peephole" class="hidden">
+    <div class="sarco-overlay-darkness"></div>
+    <div class="sarco-peephole-frame">
+      <div class="sarco-peephole-aperture"></div>
+      <div class="sarco-crack-top"></div>
+      <div class="sarco-crack-bottom"></div>
+      <div class="sarco-vignette-inner"></div>
+    </div>
+    <div class="sarco-hint-container">
+      <div id="sarco-timer-card" class="sarco-timer-card hidden">
+        <div class="sarco-timer-header">
+          <span id="sarco-timer-title" class="sarco-timer-title alert" data-i18n="sarco_guardian_alert">⚠️ СТРАЖ ИЩЕТ ВАС</span>
+          <span id="sarco-timer-countdown" class="sarco-timer-countdown" data-i18n="default_timer_sec">5.0с</span>
+        </div>
+        <div class="sarco-timer-bar-bg">
+          <div id="sarco-timer-bar-fill" class="sarco-timer-bar-fill alert"></div>
+        </div>
+        <div id="sarco-timer-subtext" class="sarco-timer-subtext" data-i18n="sarco_wait_desc">Затаитесь в саркофаге и ждите, пока Страж не успокоится...</div>
+      </div>
+      <div class="sarco-hint-text" data-i18n="sarco_hint_footer">[E] Выйти из укрытия</div>
+    </div>
+  </div>
+
+  <div id="loading" aria-busy="true" aria-labelledby="loading-title">
+    <div class="loading-brand">
+      <div class="graveborn-emblem graveborn-emblem--loading" data-emblem-slot="loading" aria-hidden="true"><img class="graveborn-emblem-image" src="./ui/graveborn-emblem.png" alt="" width="190" height="190" fetchpriority="high" /></div>
+      <div id="loading-title" class="loading-title" aria-label="Graveborn"><span>GRAVE</span><span>BORN</span></div>
+      <div class="loading-subtitle">UNTIL DAWN</div>
+    </div>
+    <div class="loading-text" role="status" data-i18n="loading_mist">Поднимаем туман...</div>
+    <div class="loading-bar" aria-hidden="true"><div class="loading-bar-fill"></div></div>
+    <div class="loading-bull" aria-hidden="true"></div>
+  </div>
+
+  <div id="perks-overlay" class="hidden"></div>
+
+  <div id="hud">
+    <div id="health-container">
+      <div class="label-row">
+        <span class="label" data-i18n="hud_health">ЖИЗНЬ</span>
+        <span id="hp-value">100</span>
+      </div>
+      <div id="hp-bar-bg">
+        <div id="hp-bar-trail"></div>
+        <div id="hp-bar-fill"></div>
+      </div>
+      <div id="stamina-row" class="stamina-row hidden">
+        <div class="label-row stamina-label-row">
+          <span class="label" data-i18n="hud_sprint">СПРИНТ [SHIFT]</span>
+          <span id="stamina-value">100%</span>
+        </div>
+        <div id="stamina-bar-bg">
+          <div id="stamina-bar-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ammo-container">
+      <div id="weapon-name" data-i18n="weapon_pistol">Пистолет</div>
+      <div class="ammo-row">
+        <span id="ammo-current">12</span>
+        <span class="slash">/</span>
+        <span id="ammo-reserve">24</span>
+      </div>
+    </div>
+
+    <div id="score-container">
+      <span class="label" data-i18n="hud_score">СЧЕТ</span>
+      <span id="score-value">0</span>
+    </div>
+    <div id="coins-hud" data-i18n-title="hud_coins_title" title="Боевые монеты для магазина внутри забега">
+      <span class="coin-mark">●</span>
+      <span id="hud-coin-count">0</span>
+      <span class="shop-key">B</span>
+    </div>
+    <div id="wave-info">
+      <div><span class="label" data-i18n="hud_wave">Волна</span> <span id="wave-num">1</span></div>
+      <div class="small"><span data-i18n="hud_zombies">Зомби:</span> <span id="enemies-num">0</span></div>
+    </div>
+    <div id="objective-card">
+      <span class="label" data-i18n="hud_objective">Цель</span>
+      <span id="objective-text" data-i18n="hud_obj_survive">Доживи до рассвета</span>
+    </div>
+    <div id="status-strip">
+      <div class="status-chip ready" id="dash-status">
+        <span class="status-label">DASH</span>
+        <span class="status-value" id="dash-value" data-i18n="hud_dash_ready">ГОТОВ</span>
+        <span class="status-fill" id="dash-fill"></span>
+      </div>
+      <div class="status-chip ready hidden" id="sneak-status">
+        <span class="status-label" data-i18n="hud_sneak">ТИХИЙ ШАГ [C]</span>
+      </div>
+      <div class="status-chip ready hidden" id="stance-status">
+        <span class="status-label" id="stance-status-label" data-i18n="hud_stance_crouch">ПРИСЕД</span>
+      </div>
+      <div class="status-chip ready" id="flashlight-status">
+        <span class="status-label">🔦 [F]</span>
+        <span class="status-value" id="flashlight-value">100%</span>
+        <span class="status-fill" id="flashlight-fill" style="width: 100%;"></span>
+      </div>
+      <div class="status-chip hidden" id="reload-status">
+        <span class="status-label">RELOAD</span>
+        <span class="status-value" id="reload-value" data-i18n="default_reload_sec">0.0с</span>
+        <span class="status-fill" id="reload-fill"></span>
+      </div>
+      <div class="status-chip event hidden" id="event-status">
+        <span class="status-label" id="event-label">EVENT</span>
+        <span class="status-value" id="event-value" data-i18n="default_event_sec">0с</span>
+        <span class="status-fill" id="event-fill"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="wave-banner" class="hidden"></div>
+  <div id="break-timer" class="hidden"></div>
+  <div id="tutorial-hint" class="hidden"></div>
+
+  <!-- Плашка подбора оружия по клавише [E] -->
+  <div id="weapon-pickup-prompt" class="weapon-pickup-prompt hidden">
+    <div class="wpp-key-badge">E</div>
+    <div class="wpp-content">
+      <div class="wpp-title" data-i18n="wpp_title">НАЖМИ ДЛЯ ПОДБОРА</div>
+      <div class="wpp-name" id="wpp-weapon-name" data-i18n="wpp_grenade_launcher">ГРАНАТОМЁТ DAEMON BANE</div>
+    </div>
+  </div>
+
+  <div id="power-timer" class="hidden">
+    <span class="power-icon">★</span>
+    <span id="power-sec-value">10</span><span class="power-suffix" data-i18n="hud_sec_short">с</span>
+  </div>
+  <div id="danger-indicator" class="hidden">
+    <span data-i18n="hud_danger">ОПАСНОСТЬ</span>
+    <b data-i18n="hud_low_hp">низкое HP</b>
+  </div>
+  <div id="power-vignette" class="hidden"></div>
+  <div id="sprint-vignette" class="sprint-vignette"></div>
+  <div id="headshot-text" data-i18n="hud_headshot">HEADSHOT!</div>
+
+  <div id="game-over" class="hidden">
+    <div class="go-panel">
+      <h1 data-i18n="go_title">Ты погиб</h1>
+      <div id="go-record-badge" class="record-badge hidden" data-i18n="go_new_record">Новый рекорд</div>
+      <div class="result-grid">
+        <p><span data-i18n="go_wave">Волна</span> <b id="go-wave">0</b></p>
+        <p><span data-i18n="go_best">Рекорд</span> <b id="go-best">0</b></p>
+        <p><span data-i18n="go_kills">Убийства</span> <b id="go-kills">0</b></p>
+        <p><span data-i18n="go_coins">Боевые монеты за забег</span> <b id="go-coins">0</b></p>
+        <p><span data-i18n="go_time">Время</span> <b id="go-time">0:00</b></p>
+      </div>
+      <div class="go-reward-strip">
+        <span data-i18n="go_crystals">Кристаллы за прогресс</span>
+        <b id="go-crystals">+0</b>
+      </div>
+      <div class="go-economy-note" data-i18n="go_economy_note">Боевые монеты тратятся в текущем забеге. Кристаллы остаются навсегда.</div>
+      <div id="go-next-goal" class="go-next-goal" data-i18n="go_default_goal">Следующая цель: Волна 5</div>
+      <div id="go-quest-progress" class="go-quest-list"></div>
+      <div id="go-analytics" class="go-analytics"></div>
+      <!-- T47: скрыто по запросу пользователя — блок «Последние забеги» (go-history);
+           рендер HUD.js (goHistoryEl guard) и логика записи истории сохранены -->
+      <!-- <div id="go-history" class="go-history"></div> -->
+      <div id="go-verdict" data-i18n="go_verdict_default">Ночь запомнит этот забег.</div>
+      <div class="go-actions">
+        <button id="restart-btn" data-i18n="go_btn_again">Играть снова</button>
+        <button id="go-upgrades-btn" class="secondary-action" data-i18n="go_btn_upgrades">Улучшения</button>
+        <button id="go-lobby-btn" class="secondary-action" data-i18n="go_btn_lobby">Лобби</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pause-overlay" class="hidden">
+    <div class="pause-panel">
+      <h2 data-i18n="pause_title">Пауза</h2>
+      <div class="pause-actions">
+        <button id="resume-btn" data-i18n="pause_resume">Продолжить</button>
+        <button id="pause-restart-btn" data-i18n="pause_restart">Рестарт</button>
+      </div>
+      <div class="settings-grid">
+        <label>
+          <span data-i18n="pause_master_vol">Общая громкость</span>
+          <input id="master-volume" type="range" min="0" max="100" value="55">
+        </label>
+        <label>
+          <span data-i18n="pause_ambience_vol">Horror ambience</span>
+          <input id="ambience-volume" type="range" min="0" max="100" value="100">
+        </label>
+        <label>
+          <span data-i18n="pause_mouse_sens">Чувствительность мыши</span>
+          <input id="mouse-sensitivity" type="range" min="20" max="100" value="55">
+        </label>
+        <label>
+          <span data-i18n="pause_graphics_qual">Качество графики</span>
+          <select id="graphics-quality">
+            <option value="auto" selected data-i18n="gq_auto">Авто</option>
+            <option value="low" data-i18n="gq_low">Низкие</option>
+            <option value="medium" data-i18n="gq_medium">Средние</option>
+            <option value="high" data-i18n="gq_high">Высокие</option>
+          </select>
+        </label>
+        <label class="toggle-setting">
+          <span data-i18n="pause_fps_counter">FPS-счётчик</span>
+          <input id="fps-counter-toggle" type="checkbox">
+        </label>
+        <label>
+          <span data-i18n="pause_lang_label">Язык / Language</span>
+          <select id="pause-lang-select" class="lang-select">
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div id="tactical-map-overlay" class="hidden">
+    <div class="tactical-map-panel">
+      <div class="tactical-map-header">
+        <div class="tactical-map-title">
+          <span class="tac-icon">🗺️</span>
+          <div>
+            <h3 data-i18n="tac_title">ТАКТИЧЕСКАЯ КАРТА ПОЛЯ БОЯ</h3>
+            <span class="tac-subtitle" id="tac-map-name" data-i18n="tac_loc_graveyard">ЛОКАЦИЯ: ПРОКЛЯТЫЙ ПОГОСТ</span>
+          </div>
+        </div>
+        <div class="tac-header-actions">
+          <span class="tac-hint-badge" data-i18n="tac_close_hint">[M] или [ESC] закрыть</span>
+          <button id="close-tactical-map-btn" class="tac-close-btn" data-i18n-title="tac_close_btn_title" title="Закрыть">✕</button>
+        </div>
+      </div>
+      <div class="tactical-map-body">
+        <div class="tactical-map-viewport">
+          <canvas id="tactical-map-canvas" width="560" height="560"></canvas>
+          <div class="tac-compass-n" data-i18n="tac_compass_n">СЕВЕР</div>
+          <div class="tac-compass-s" data-i18n="tac_compass_s">ЮГ</div>
+          <div class="tac-compass-w" data-i18n="tac_compass_w">ЗАПАД</div>
+          <div class="tac-compass-e" data-i18n="tac_compass_e">ВОСТОК</div>
+        </div>
+        <div class="tactical-map-sidebar">
+          <div class="tac-info-block">
+            <div class="tac-block-title" data-i18n="tac_block_structures">📍 КЛЮЧЕВЫЕ СТРОЕНИЯ</div>
+            <div class="tac-poi-list">
+              <div class="tac-poi-item pyramid">
+                <span class="tac-poi-ico">⚜️</span>
+                <div><b data-i18n="poi_pyramid_title">Великая Пирамида & Святилище</b><span data-i18n="poi_pyramid_desc">Юг [0, -68] • Врата на Z=-52, пентаграмма портала</span></div>
+              </div>
+              <div class="tac-poi-item ziggurat">
+                <span class="tac-poi-ico">🛕</span>
+                <div><b data-i18n="poi_ziggurat_title">Разрушенный Зиккурат</b><span data-i18n="poi_ziggurat_desc">Северо-Запад [-52, 54] • Оборонительный рубеж</span></div>
+              </div>
+              <div class="tac-poi-item altar">
+                <span class="tac-poi-ico">🩸</span>
+                <div><b data-i18n="poi_altar_title">Алтарь Крови & Обелиск</b><span data-i18n="poi_altar_desc">Север [0, 60] • 15 HP = Патроны + Ярость [E]</span></div>
+              </div>
+              <div class="tac-poi-item gate">
+                <span class="tac-poi-ico">🚪</span>
+                <div><b data-i18n="poi_gate_title">Врата Кладбища</b><span data-i18n="poi_gate_desc">Север [0, 78] • Кованый портал и львиные браслеты</span></div>
+              </div>
+              <div class="tac-poi-item watchtower">
+                <span class="tac-poi-ico">🏰</span>
+                <div><b data-i18n="poi_watchtower_title">Дозорная Башня</b><span data-i18n="poi_watchtower_desc">Восток [54, -20] • Высотная точка огня</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tac-info-block">
+            <div class="tac-block-title" data-i18n="tac_block_situation">📊 БОЕВАЯ ОБСТАНОВКА</div>
+            <div class="tac-stats-grid">
+              <div class="tac-stat"><span class="tac-stat-label" data-i18n="tac_stat_wave">ВОЛНА</span><b id="tac-wave-val">1</b></div>
+              <div class="tac-stat"><span class="tac-stat-label" data-i18n="tac_stat_enemies">ВРАГОВ В ЖИВЫХ</span><b id="tac-enemies-val">0</b></div>
+              <div class="tac-stat"><span class="tac-stat-label" data-i18n="tac_stat_pos">ПОЗИЦИЯ [X, Z]</span><b id="tac-pos-val">0, 0</b></div>
+              <div class="tac-stat"><span class="tac-stat-label" data-i18n="tac_stat_obj">СТАТУС ЦЕЛИ</span><b id="tac-obj-val" style="color: #56d6c6;" data-i18n="tac_survival">Выживание</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="start-overlay" class="title-screen-overlay">
+    <!-- Атмосферный фон с дождём и молниями (Canvas 2D) -->
+    <canvas id="title-rain-canvas" class="title-rain-canvas" aria-hidden="true"></canvas>
+    <div class="title-vignette" aria-hidden="true"></div>
+    <div class="title-scanlines" aria-hidden="true"></div>
+
+    <!-- Полноценный игровой интерфейс в стиле сюжетных игр на прохождение -->
+    <div class="title-game-screen">
+      <!-- Левый сайдбар с логотипом и вертикальным главным меню -->
+      <aside class="title-sidebar">
+        <div class="title-brand" aria-label="Graveborn: Until Dawn">
+          <div class="graveborn-emblem graveborn-emblem--menu" data-emblem-slot="menu" aria-hidden="true"><img class="graveborn-emblem-image" src="./ui/graveborn-emblem.png" alt="" width="56" height="56" /></div>
+          <div class="title-brand-copy" role="img" aria-label="Graveborn: Until Dawn">
+            <svg class="title-brand-wordmark" viewBox="0 0 220 54" aria-hidden="true" focusable="false">
+              <text x="0" y="28" textLength="220" lengthAdjust="spacing" font-size="28" font-weight="800" fill="currentColor">GRAVEBORN</text>
+              <text class="title-brand-tagline" x="0" y="50" textLength="220" lengthAdjust="spacing" font-size="12" font-weight="500">UNTIL DAWN</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Полноценное вертикальное меню в стиле сюжетных игр (STALKER / Resident Evil / Metro) -->
+        <nav class="title-main-nav" role="tablist" aria-label="Graveborn">
+          <button class="title-menu-item lobby-tab-btn active" data-target="tab-play" role="tab" aria-selected="true">
+            <span class="menu-item-accent"></span>
+            <span class="menu-item-icon">⚔️</span>
+            <span class="menu-item-content">
+              <span class="menu-item-title" data-i18n="menu_play">В БОЙ</span>
+              <span class="menu-item-sub" data-i18n="menu_play_sub">Начать кампанию выживания</span>
+            </span>
+          </button>
+          <button class="title-menu-item lobby-tab-btn" data-target="tab-perks" role="tab" aria-selected="false">
+            <span class="menu-item-accent"></span><span class="menu-item-icon">◈</span>
+            <span class="menu-item-content"><span class="menu-item-title" data-i18n="menu_perks">ДРЕВО ПЕРКОВ</span><span class="menu-item-sub" data-i18n="menu_perks_sub">Ветки, эволюции и открытия</span></span>
+          </button>
+          
+          <button class="title-menu-item lobby-tab-btn" data-target="tab-controls" role="tab" aria-selected="false">
+            <span class="menu-item-accent"></span>
+            <span class="menu-item-icon">⌨️</span>
+            <span class="menu-item-content">
+              <span class="menu-item-title" data-i18n="menu_controls">УПРАВЛЕНИЕ</span>
+              <span class="menu-item-sub" data-i18n="menu_controls_sub">Клавиши боя и мобильный UX</span>
+            </span>
+          </button>
+          <button class="title-menu-item lobby-tab-btn" data-target="tab-settings" role="tab" aria-selected="false">
+            <span class="menu-item-accent"></span>
+            <span class="menu-item-icon">⚙️</span>
+            <span class="menu-item-content">
+              <span class="menu-item-title" data-i18n="menu_settings">НАСТРОЙКИ</span>
+              <span class="menu-item-sub" data-i18n="menu_settings_sub">Графика, производительность</span>
+            </span>
+          </button>
+          <button class="title-menu-item lobby-tab-btn" data-target="tab-multiplayer" role="tab" aria-selected="false">
+            <span class="menu-item-accent"></span>
+            <span class="menu-item-icon">🌐</span>
+            <span class="menu-item-content">
+              <span class="menu-item-title" data-i18n="menu_multiplayer">МУЛЬТИПЛЕЕР</span>
+              <span class="menu-item-sub" data-i18n="menu_multiplayer_sub">Кооператив погоста [WIP]</span>
+            </span>
+          </button>
+        </nav>
+
+        <div class="title-sidebar-footer">
+          <!-- Переключатель языка / Language Switcher -->
+          <div class="title-lang-switcher" role="group" aria-label="Language selection">
+            <button type="button" class="lang-btn active" data-lang="ru">RU</button>
+            <span class="lang-divider">/</span>
+            <button type="button" class="lang-btn" data-lang="en">EN</button>
+          </div>
+          <button id="title-audio-toggle" class="title-audio-btn awaiting" type="button" data-i18n-title="audio_toggle_title" title="Включить / выключить звук дождя">
+            <span class="audio-btn-icon" aria-hidden="true">♫</span>
+            <span id="title-audio-text" class="audio-btn-text" data-i18n="audio_enable_rain">ВКЛЮЧИТЬ ЗВУК ДОЖДЯ</span>
+            <span class="audio-wave-anim" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+          <div class="meta-item crystals-chip" data-i18n-title="crystals_title" title="Кристаллы (Мета-валюта)">
+            <span class="meta-icon" aria-hidden="true">◇</span> <span id="meta-crystals">0</span>
+            <span class="crystals-label" data-i18n="crystals_label">КРИСТАЛЛОВ</span>
+          </div>
+          <div class="sidebar-system-info">
+            <div class="sys-version" data-i18n="sys_version">GRAVEBORN • BUILD 1.4.2</div>
+            <div class="sys-mode"><span class="live-dot"></span> <span data-i18n="sys_mode">СЮЖЕТНАЯ КАМПАНИЯ ОДИНОЧНАЯ</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Правая область с экранами разделов (Вкладки) -->
+      <main class="title-content-area lobby-content">
+
+        <!-- Вкладка 1: Главный экран кампании (tab-play) -->
+        <div id="tab-play" class="lobby-tab active campaign-stage">
+          <div class="campaign-stage-columns">
+            <!-- The copy stays separate from the live character stage. -->
+            <div class="campaign-info-col">
+              <!-- Сюжетный синопсис / брифинг главы -->
+              <div class="campaign-prologue-card">
+                <div class="prologue-header">
+                  <span class="prologue-badge" data-i18n="title_campaign_label">ГЛАВА I · ПРОКЛЯТИЕ ПОГОСТА</span>
+                </div>
+                <h1 class="main-title-logo" aria-label="Graveborn: Until Dawn"><span class="logo-toon">GRAVE</span><span class="logo-shooter">BORN</span></h1>
+                <div class="title-sub-brand">UNTIL DAWN</div>
+                <h2 class="prologue-title" data-i18n="title_story_heading">Эта ночь — твоя.</h2>
+                <p class="prologue-narrative" data-i18n="title_story_desc">Древние боги проснулись. Пройди сквозь погост, раскрой тайны святилищ и доживи до рассвета.</p>
+              </div>
+              <div class="campaign-launch-row">
+                <button id="start-btn" class="hero-start-btn campaign-start-btn" type="button">
+                  <span class="hero-btn-title" data-i18n="btn_enter_battle">Начать игру</span>
+                  <span class="hero-btn-arrow" aria-hidden="true">↗</span>
+                </button>
+                <span class="hero-btn-sub" data-i18n="btn_enter_battle_sub">Одиночное выживание · До рассвета</span>
+              </div>
+            </div>
+
+            <!-- Both characters share one lightweight 3D canvas. -->
+            <div class="title-hero-showcase">
+              <div class="hero-showcase-header">
+                <div class="hero-showcase-tag">
+                  <span class="hero-pulse-dot" aria-hidden="true"></span>
+                  <span data-i18n="title_stage_tag">ПЕРЕД РАССВЕТОМ</span>
+                </div>
+                <div class="hero-showcase-name" data-i18n="title_stage_cast">ОХОТНИК + СТРАЖ</div>
+              </div>
+              <div class="hero-canvas-container">
+                <div class="title-stage-backdrop" aria-hidden="true"></div>
+                <canvas id="title-hero-canvas" role="img" data-i18n-aria-label="title_stage_description" aria-label="Главный герой и Ламассу танцуют перед боем"></canvas>
+                <span id="title-hero-status" class="title-hero-status" role="status" data-i18n="title_stage_loading">Герои выходят на сцену…</span>
+              </div>
+              <div class="hero-showcase-footer">
+                <span class="hero-ctrl-hint" data-i18n="title_stage_hint">У каждой ночи свой ритм.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- T54: скрыто по запросу пользователя (минимализм лобби) — разведданные
+               кампании (intel-cards: Рунические Сферы / Алтарь Крови / Особый Дроп).
+               Разметка и i18n-ключи сохранены, CSS-классы не тронуты. -->
+          <!-- <div class="campaign-intel-grid">
+            <div class="intel-card">
+              <div class="intel-icon">🛡️</div>
+              <div class="intel-body">
+                <b data-i18n="intel_spheres_title">Рунические Сферы</b>
+                <span data-i18n="intel_spheres_desc">Стражи окутаны белым щитом до сбора артефактов в храмах.</span>
+              </div>
+            </div>
+            <div class="intel-card">
+              <div class="intel-icon">🩸</div>
+              <div class="intel-body">
+                <b data-i18n="intel_altar_title">Алтарь Крови</b>
+                <span data-i18n="intel_altar_desc">Отыщи на севере обелиск крови [E] — обменяй HP на неуязвимость и урон.</span>
+              </div>
+            </div>
+            <div class="intel-card">
+              <div class="intel-icon">💥</div>
+              <div class="intel-body">
+                <b data-i18n="intel_drop_title">Особый Дроп</b>
+                <span data-i18n="intel_drop_desc">На 2-й волне с последнего паука выпадает гранатомёт — подойди и нажми [E]!</span>
+              </div>
+            </div>
+          </div> -->
+
+          <!-- T54: скрыто по запросу пользователя (минимализм лобби) — превью квестов;
+               main.js refreshStartMeta (start-quest-preview guard) и questProgressHtml
+               сохранены и безопасны на отсутствующем элементе -->
+          <!-- <div class="quest-preview" id="start-quest-preview"></div> -->
+
+          <div class="start-progress title-progress-grid">
+            <div class="progress-card record-card"><span class="progress-label" data-i18n="record_card">ЛУЧШАЯ ВОЛНА</span><b id="start-best-wave">0</b></div>
+            <div class="progress-card coins-card"><span class="progress-label" data-i18n="coins_card">МОНЕТЫ</span><b id="start-coins">0</b></div>
+            <div class="progress-card goal-card"><span class="progress-label" data-i18n="goal_card">СЛЕДУЮЩАЯ ЦЕЛЬ</span><b id="start-next-goal" data-i18n="start_default_goal">Волна 5</b></div>
+            <div class="progress-card tip-card"><span class="progress-label" data-i18n="tip_card">ПЕРЕД БОЕМ</span><b id="start-tip" data-i18n="tip_default">Держи дистанцию</b></div>
+          </div>
+        </div>
+
+        
+        <!-- Вкладка 2: Управление в бою (tab-controls) -->
+        <div id="tab-controls" class="lobby-tab hidden sub-stage">
+          <div class="sub-stage-header">
+            <div class="sub-stage-title-wrap">
+              <span class="sub-stage-tag" data-i18n="controls_tag">РУКОВОДСТВО БОЙЦА</span>
+              <h2 data-i18n="controls_title">Управление в бою</h2>
+            </div>
+            <button class="back-to-menu-btn" data-goto-tab="tab-play">
+              <span class="back-arrow">←</span> <span data-i18n="btn_back_to_menu">НАЗАД В ГЛАВНОЕ МЕНЮ</span>
+            </button>
+          </div>
+          <p class="tab-desc" data-i18n="controls_desc">Полная раскладка клавиатуры и мыши, а также параметры для сенсорных экранов.</p>
+
+          <div class="start-block controls-block">
+            <div class="block-title" data-i18n="kb_mouse_title">⌨️ Клавиатура и Мышь</div>
+            <div class="mobile-control-copy">
+              <div><b data-i18n="mob_left_stick">Левый стик</b><span data-i18n="mob_left_stick_desc">Движение</span></div>
+              <div><b data-i18n="mob_right_stick">Правый стик</b><span data-i18n="mob_right_stick_desc">Прицел</span></div>
+              <div><b data-i18n="mob_buttons">Кнопки</b><span data-i18n="mob_buttons_desc">Стрельба, рывок, прыжок, оружие</span></div>
+            </div>
+            <div class="controls-grid desktop-controls">
+              <div class="key-item"><div class="key-caps"><kbd data-action="forward">W</kbd><kbd data-action="left">A</kbd><kbd data-action="back">S</kbd><kbd data-action="right">D</kbd></div><span data-i18n="ctrl_move">Движение и стрейф</span></div>
+              <div class="key-item"><kbd data-action="sprint">Shift</kbd><span data-i18n="ctrl_sprint">Тактический спринт</span></div>
+              <div class="key-item"><kbd data-action="sneak">C</kbd><span data-i18n="ctrl_sneak">Тихий шаг — стелс: стражи храмов не слышат шагов</span></div>
+              <div class="key-item"><kbd data-action="crouch">Ctrl</kbd><span data-i18n="ctrl_crouch">Присесть — тихая стойка: ниже профиль, медленный шаг</span></div>
+              <div class="key-item"><kbd data-action="prone">Z</kbd><span data-i18n="ctrl_prone">Лечь / ползти — самый тихий режим</span></div>
+              <div class="key-item"><kbd data-action="jump">Space</kbd><span data-i18n="ctrl_jump">Прыжок</span></div>
+              <div class="key-item"><kbd data-i18n="ctrl_lmb">ЛКМ</kbd><span data-i18n="ctrl_shoot">Стрельба</span></div>
+              <div class="key-item"><kbd data-action="reload">R</kbd><span data-i18n="ctrl_reload">Быстрая перезарядка</span></div>
+              <div class="key-item"><kbd data-action="interact">E</kbd><span data-i18n="ctrl_interact">Взаимодействие / Взять оружие</span></div>
+              <div class="key-item"><kbd data-action="dash">Alt</kbd><span data-i18n="ctrl_dash">Рывок</span></div>
+              <div class="key-item"><kbd data-action="flashlight">F</kbd><span data-i18n="ctrl_flashlight">Тактический фонарик</span></div>
+              <div class="key-item"><div class="key-caps"><kbd data-action="weaponNext">Q</kbd><kbd data-action="weapon1">1</kbd><kbd data-action="weapon2">2</kbd><kbd data-action="weapon3">3</kbd></div><span data-i18n="ctrl_switch_weapon">Смена оружия</span></div>
+              <div class="key-item"><kbd data-action="arsenal">B</kbd><span data-i18n="ctrl_shop">Боевой арсенал</span></div>
+              <div class="key-item"><kbd data-action="map">M</kbd><span data-i18n="ctrl_map">Тактическая карта</span></div>
+            </div>
+            <div class="keybinds-actions">
+              <button id="keybinds-reset" class="keybinds-reset-btn" type="button"><span data-i18n="ctrl_reset">Сбросить клавиши</span></button>
+              <span class="keybinds-hint" data-i18n="ctrl_rebind_hint">Клик по клавише — переназначить (Esc — отмена)</span>
+            </div>
+
+            <div class="mobile-settings">
+              <div class="block-title" data-i18n="mobile_settings_title">📱 Сенсорное управление</div>
+              <label class="toggle-row">
+                <input id="mobile-auto-fire" type="checkbox">
+                <span data-i18n="mob_auto_fire">Автоматическая стрельба при наведении</span>
+              </label>
+              <label class="toggle-row">
+                <input id="mobile-aim-assist" type="checkbox">
+                <span data-i18n="mob_aim_assist">Помощь в прицеливании (Aim Assist)</span>
+              </label>
+              <label class="range-row">
+                <span data-i18n="mob_btn_size">Размер экранных кнопок</span>
+                <input id="mobile-button-size" type="range" min="48" max="76" value="60">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Вкладка 3: Настройки (tab-settings) -->
+        <div id="tab-settings" class="lobby-tab hidden sub-stage">
+          <div class="sub-stage-header">
+            <div class="sub-stage-title-wrap">
+              <span class="sub-stage-tag" data-i18n="settings_tag">КОНФИГУРАЦИЯ СИСТЕМЫ</span>
+              <h2 data-i18n="settings_title">Настройки графики и производительности</h2>
+            </div>
+            <button class="back-to-menu-btn" data-goto-tab="tab-play">
+              <span class="back-arrow">←</span> <span data-i18n="btn_back_to_menu">НАЗАД В ГЛАВНОЕ МЕНЮ</span>
+            </button>
+          </div>
+          <p class="tab-desc" data-i18n="settings_desc">Выберите пресет графики. Настройки применяются мгновенно и сохраняются между сессиями.</p>
+
+          <!-- Выбор языка интерфейса -->
+          <div class="progress-card lang-card" style="margin-bottom: 14px;">
+            <div class="gq-card-title" data-i18n="settings_language">Язык интерфейса / Language</div>
+            <div class="gq-seg" id="lobby-lang-seg" role="group" aria-label="Language selection">
+              <button type="button" class="gq-btn lang-toggle-btn active" data-lang="ru">🇷🇺 Русский</button>
+              <button type="button" class="gq-btn lang-toggle-btn" data-lang="en">🇬🇧 English</button>
+            </div>
+          </div>
+
+          <div class="progress-card gq-card">
+            <div class="gq-card-title" data-i18n="gq_title">Пресет графического рендера</div>
+            <div class="gq-seg" id="lobby-gq-seg" role="group" aria-label="Качество графики" data-i18n-aria-label="gq_title">
+              <button class="gq-btn" data-q="auto" data-i18n="gq_auto">Авто</button>
+              <button class="gq-btn" data-q="low" data-i18n="gq_low">Низкие</button>
+              <button class="gq-btn" data-q="medium" data-i18n="gq_medium">Средние</button>
+              <button class="gq-btn" data-q="high" data-i18n="gq_high">Высокие</button>
+            </div>
+            <div class="gq-hint-list">
+              <p class="gq-hint" data-i18n-html="gq_hint_auto">⚡ <b>Авто</b> — адаптивный подбор частоты кадров под ваше устройство.</p>
+              <p class="gq-hint" data-i18n-html="gq_hint_low">🎮 <b>Низкие</b> — максимальный FPS: отключён bloom, оптимизированы тени и частицы.</p>
+              <p class="gq-hint" data-i18n-html="gq_hint_high">✨ <b>Высокие</b> — кинематографичный постпроцессинг, объёмный туман и максимальное сглаживание.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-perks" class="lobby-tab hidden sub-stage">
+          <div class="sub-stage-header"><div class="sub-stage-title-wrap"><span class="sub-stage-tag" data-i18n="tree_tag">АТЛАС ДРЕВНИХ УЧЕНИЙ</span><h2 data-i18n="tree_title">Древо перков</h2></div>
+            <button class="back-to-menu-btn" data-goto-tab="tab-play"><span class="back-arrow">←</span><span data-i18n="btn_back_to_menu">НАЗАД В ГЛАВНОЕ МЕНЮ</span></button>
+          </div>
+          <div id="perk-tree" class="perk-tree"></div>
+        </div>
+
+        <!-- Вкладка 4: Мультиплеер (tab-multiplayer) -->
+        <div id="tab-multiplayer" class="lobby-tab hidden sub-stage">
+          <div class="sub-stage-header">
+            <div class="sub-stage-title-wrap">
+              <span class="sub-stage-tag" data-i18n="mp_tag">СЕТЕВОЙ РЕЖИМ</span>
+              <h2 data-i18n="mp_title">Кооперативный Мультиплеер</h2>
+            </div>
+            <button class="back-to-menu-btn" data-goto-tab="tab-play">
+              <span class="back-arrow">←</span> <span data-i18n="btn_back_to_menu">НАЗАД В ГЛАВНОЕ МЕНЮ</span>
+            </button>
+          </div>
+          <p class="tab-desc" data-i18n="mp_desc">Совместное выживание с друзьями на древнем погосте.</p>
+
+          <div class="progress-card mp-wip-card">
+            <div class="mp-wip-ico">🌐</div>
+            <div class="mp-wip-title" data-i18n="mp_wip_title">Сетевой узел в разработке</div>
+            <p class="mp-wip-text" data-i18n="mp_wip_text">
+              Сетевой кооператив готовится к интеграции. В текущей версии сюжетная кампания, алтари богов, рунические боссы и весь арсенал оружия доступны в режиме одиночного выживания.
+            </p>
+            <button class="mp-wip-back back-to-menu-btn" data-goto-tab="tab-play" data-i18n="mp_btn_back">
+              Вернуться в главное меню кампании
+            </button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile controls -->
+  <div id="mobile-controls" class="hidden">
+    <div id="joystick-move" class="joystick-zone move-zone">
+      <div class="joystick-base"><div class="joystick-stick"></div></div>
+    </div>
+    <div class="mobile-buttons">
+      <button id="btn-shoot" class="mob-btn" type="button" data-i18n-aria-label="touch_shoot" aria-label="Стрелять">◎</button>
+      <button id="btn-dash" class="mob-btn" type="button" data-i18n-aria-label="touch_dash" aria-label="Рывок">»</button>
+      <button id="btn-interact" class="mob-btn" type="button" data-i18n-aria-label="touch_interact" aria-label="Взаимодействовать">✋</button>
+      <button id="btn-flashlight" class="mob-btn" type="button" data-i18n-aria-label="touch_flashlight" aria-label="Фонарик">🔦</button>
+      <button id="btn-jump" class="mob-btn" type="button" data-i18n-aria-label="touch_jump" aria-label="Прыжок">↟</button>
+      <button id="btn-reload" class="mob-btn" type="button" data-i18n-aria-label="touch_reload" aria-label="Перезарядка">↻</button>
+      <button id="btn-weapon" class="mob-btn" type="button" data-i18n-aria-label="touch_weapon" aria-label="Сменить оружие">⇄</button>
+      <button id="btn-more" class="mob-btn" type="button" data-i18n-aria-label="touch_more" aria-label="Дополнительные действия" aria-expanded="false">•••</button>
+      <button id="btn-crouch" class="mob-btn" type="button" data-i18n-aria-label="touch_crouch" aria-label="Присесть" data-i18n="touch_crouch">Присесть</button>
+      <button id="btn-prone" class="mob-btn" type="button" data-i18n-aria-label="touch_prone" aria-label="Лечь" data-i18n="touch_prone">Лечь</button>
+      <button id="btn-map" class="mob-btn" type="button" data-i18n-aria-label="touch_map" aria-label="Карта">⌖</button>
+    </div>
+    <button id="btn-shop" class="mob-btn" type="button" data-i18n-aria-label="touch_shop" aria-label="Арсенал">▣</button>
+    <button id="btn-pause" class="mob-btn" type="button" data-i18n-aria-label="touch_pause" aria-label="Пауза">Ⅱ</button>
+    <div id="joystick-aim" class="joystick-zone aim-zone">
+      <div class="joystick-base"><div class="joystick-stick"></div></div>
+    </div>
+  </div>
+
+</body>
+</html>

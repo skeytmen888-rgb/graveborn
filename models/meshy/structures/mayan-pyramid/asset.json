@@ -1,0 +1,10 @@
+{
+  "label": "Пирамида майя",
+  "id": "mayan-pyramid",
+  "model": "mayan-pyramid.glb",
+  "source": "Vinebound_Temple_Maya_Draco.glb",
+  "compression": "KHR_draco_mesh_compression",
+  "bytes": 2497804,
+  "revealAfter": "pyramidSanctumCompleted",
+  "entranceLocked": true
+}

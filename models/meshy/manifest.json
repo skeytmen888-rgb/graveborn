@@ -1,0 +1,741 @@
+{
+  "version": 1,
+  "generatedAt": "2026-05-13T23:43:41.211Z",
+  "characters": {
+    "plagueCultist": {
+      "label": "Infernal Skyreaver",
+      "model": "characters/skyreaver/animated.glb",
+      "scale": 1,
+      "offsetY": -0.9984284225336847,
+      "targetHeight": 2,
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "idle2": [
+          "idle2"
+        ],
+        "flight": [
+          "flight"
+        ],
+        "walk": [
+          "flight"
+        ],
+        "run": [
+          "flight"
+        ],
+        "attack": [
+          "attack"
+        ],
+        "melee": [
+          "melee"
+        ],
+        "hit": [
+          "hit"
+        ],
+        "die": [
+          "die"
+        ]
+      },
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "boneBrute": {
+      "label": "Neon Mind Reaper",
+      "model": "characters/floating-brain/animated.glb",
+      "scale": 1,
+      "offsetY": 0,
+      "targetHeight": 1.8,
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "walk": [
+          "walk"
+        ],
+        "run": [
+          "run"
+        ],
+        "hit": [
+          "hit"
+        ],
+        "angry": [
+          "angry"
+        ],
+        "rage": [
+          "rage"
+        ],
+        "attack": [
+          "attack"
+        ],
+        "die": [
+          "die"
+        ]
+      },
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "graveKnight": {
+      "label": "Grave Knight",
+      "model": "characters/grave-knight/rigged.glb",
+      "scale": 0.0102,
+      "offsetY": -0.92,
+      "targetHeight": 1.86,
+      "animations": {
+        "idle": "characters/grave-knight/animations/idle.glb",
+        "walk": "characters/grave-knight/animations/walk.glb",
+        "run": "characters/grave-knight/animations/run.glb",
+        "attack": "characters/grave-knight/animations/attack.glb",
+        "defend": "characters/grave-knight/animations/defend.glb",
+        "hit": "characters/grave-knight/animations/hit.glb",
+        "die": "characters/grave-knight/animations/die.glb"
+      },
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "mixamoWarrior": {
+      "label": "Hollow Revenant Warrior",
+      "model": "characters/mixamo-warrior/rigged.glb",
+      "targetHeight": 2.12,
+      "offsetY": -0.92,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "walk": [
+          "running",
+          "run"
+        ],
+        "run": [
+          "running",
+          "run"
+        ],
+        "attack": [
+          "bite",
+          "attack"
+        ],
+        "hit": [
+          "reaction_hit",
+          "hit"
+        ],
+        "die": [
+          "death",
+          "die"
+        ]
+      }
+    },
+    "ravagerBomber": {
+      "label": "The Ravager",
+      "model": "characters/ravager/rigged.glb",
+      "targetHeight": 2.05,
+      "offsetY": -0.85,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "walk": [
+          "run",
+          "running"
+        ],
+        "run": [
+          "run",
+          "running"
+        ],
+        "attack": [
+          "attack",
+          "zombie_attack"
+        ],
+        "hit": [
+          "hit",
+          "rib_hit"
+        ],
+        "die": [
+          "die",
+          "mutant_dying"
+        ]
+      }
+    },
+    "spider": {
+      "label": "Crypt Spider",
+      "model": "characters/spider/rigged.glb",
+      "scale": 0.014,
+      "offsetY": -0.7,
+      "targetHeight": 1.4,
+      "rotation": [
+        0,
+        3.14159,
+        0
+      ],
+      "embeddedAnimations": true
+    },
+    "flyingDemon": {
+      "label": "Flying Winged Demon",
+      "model": "models/enemies/flying_demon.glb",
+      "scale": 1,
+      "offsetY": -0.85,
+      "targetHeight": 2.3,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true
+    },
+    "fastSkeleton": {
+      "label": "Fast Skeleton",
+      "model": "models/enemies/fast_skeleton.glb",
+      "scale": 1,
+      "offsetY": -0.58,
+      "targetHeight": 1.95,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false
+    },
+    "rockWraith": {
+      "label": "Rock Wraith",
+      "model": "models/enemies/rock_wraith.glb",
+      "scale": 1,
+      "offsetY": -0.6,
+      "targetHeight": 3.2,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false
+    },
+    "mummyKing": {
+      "label": "Mummy King",
+      "model": "models/temple/mummy_lvl1_v2_rigged.glb",
+      "scale": 1,
+      "offsetY": -0.9,
+      "targetHeight": 3.4,
+      "rotation": [
+        0,
+        3.14159,
+        0
+      ],
+      "embeddedAnimations": true,
+      "outline": false
+    },
+    "graveCaster": {
+      "label": "Grave Caster",
+      "model": "models/enemies/grave_caster.glb",
+      "scale": 1,
+      "offsetY": -0.85,
+      "targetHeight": 1.85,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false
+    },
+    "shadow": {
+      "label": "Shadow",
+      "model": "models/enemies/shadow.glb",
+      "scale": 1,
+      "offsetY": -1.22,
+      "targetHeight": 2.65,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "forceOpaque": false,
+      "outline": false,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "idleTwist": [
+          "idletwist"
+        ],
+        "idleCalm": [
+          "idlecalm"
+        ],
+        "walk": [
+          "walk"
+        ],
+        "run": [
+          "run"
+        ],
+        "hit": [
+          "hit"
+        ],
+        "headHit": [
+          "headhit"
+        ],
+        "die": [
+          "die"
+        ],
+        "castOne": [
+          "castone"
+        ],
+        "castTwo": [
+          "casttwo"
+        ],
+        "boltOne": [
+          "boltone"
+        ],
+        "boltTwo": [
+          "bolttwo"
+        ],
+        "boltThree": [
+          "boltthree"
+        ],
+        "blastOne": [
+          "blastone"
+        ],
+        "blastTwo": [
+          "blasttwo"
+        ],
+        "blastThree": [
+          "blastthree"
+        ],
+        "blastFour": [
+          "blastfour"
+        ],
+        "blastFive": [
+          "blastfive"
+        ],
+        "areaOne": [
+          "areaone"
+        ],
+        "areaTwo": [
+          "areatwo"
+        ]
+      }
+    },
+    "azureGuardian": {
+      "label": "Azure Rock Guardian",
+      "model": "models/enemies/azure_guardian.glb",
+      "scale": 1,
+      "offsetY": -1.65,
+      "targetHeight": 3.7,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "walk": [
+          "walk"
+        ],
+        "laugh": [
+          "laugh"
+        ],
+        "leapAttack": [
+          "leapattack"
+        ],
+        "die": [
+          "die"
+        ],
+        "run": [
+          "run"
+        ],
+        "swipe": [
+          "swipe"
+        ],
+        "punch": [
+          "punch"
+        ],
+        "jump": [
+          "jump"
+        ]
+      }
+    },
+    "graveGhost": {
+      "label": "Grave Ghost",
+      "model": "models/enemies/grave_ghost.glb",
+      "scale": 1,
+      "offsetY": -0.9,
+      "targetHeight": 1.9,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "walk": [
+          "run"
+        ],
+        "run": [
+          "run"
+        ],
+        "attack": [
+          "attack"
+        ]
+      }
+    },
+    "graveyardSerpent": {
+      "label": "Graveyard Serpent",
+      "model": "models/enemies/graveyard_serpent.glb",
+      "worldScale": 0.6681195597331779,
+      "offsetY": -0.5,
+      "targetHeight": 2.375,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false,
+      "animationClips": {
+        "idle": [
+          "reference_serpentine_loop"
+        ],
+        "walk": [
+          "reference_serpentine_loop"
+        ],
+        "run": [
+          "reference_serpentine_loop"
+        ],
+        "crawl": [
+          "reference_serpentine_loop"
+        ],
+        "raise": [
+          "enter_attack_stance"
+        ],
+        "bite": [
+          "attack_bite"
+        ],
+        "lower": [
+          "exit_attack_stance"
+        ],
+        "attack": [
+          "attack_bite"
+        ]
+      }
+    },
+    "cryptHerald": {
+      "label": "Horned Crypt Herald",
+      "model": "models/enemies/crypt_herald.glb",
+      "scale": 1,
+      "offsetY": -0.9,
+      "targetHeight": 1.9,
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "embeddedAnimations": true,
+      "preserveAnimationUnits": true,
+      "outline": false,
+      "animationClips": {
+        "idle": [
+          "idle"
+        ],
+        "gesture": [
+          "gesture"
+        ],
+        "walk": [
+          "run"
+        ],
+        "run": [
+          "run"
+        ],
+        "cast": [
+          "cast"
+        ],
+        "attack": [
+          "melee"
+        ],
+        "melee": [
+          "melee"
+        ],
+        "hit": [
+          "hit"
+        ],
+        "die": [
+          "die"
+        ]
+      }
+    }
+  },
+  "enemyMap": {
+    "default": "fastSkeleton",
+    "minion": "fastSkeleton",
+    "crawler": "spider",
+    "rogue": "graveyardSerpent",
+    "assassin": "graveGhost",
+    "warrior": "mixamoWarrior",
+    "archer": "graveCaster",
+    "gunner": "cryptHerald",
+    "spitter": "plagueCultist",
+    "necromancer": "graveCaster",
+    "tank": "boneBrute",
+    "berserker": "mixamoWarrior",
+    "boss": "boneBrute",
+    "demonBoss": "flyingDemon",
+    "mummyKing": "mummyKing",
+    "rockWraith": "rockWraith",
+    "graveWarden": "graveKnight",
+    "reacher": "cryptHerald",
+    "bomber": "ravagerBomber",
+    "shadow": "shadow",
+    "azureGuardian": "azureGuardian"
+  },
+  "structures": [
+    {
+      "id": "ziggurat",
+      "label": "Great Ziggurat of Babylon",
+      "model": "structures/ruined-chapel/model.glb",
+      "scale": 13,
+      "position": [
+        -52,
+        0,
+        54
+      ],
+      "rotationY": 0.45,
+      "collides": false
+    },
+    {
+      "id": "pyramid",
+      "label": "Desert Pyramid",
+      "model": "structures/pyramid/model.glb",
+      "scale": 20,
+      "position": [
+        0,
+        0,
+        -68
+      ],
+      "rotationY": 0,
+      "collides": false
+    }
+  ],
+  "pickups": {
+    "hex-coin": {
+      "label": "Hex Coin",
+      "model": "pickups/optimized/hex-coin.glb",
+      "scale": 0.65,
+      "offsetY": -0.1
+    },
+    "ammo-crate": {
+      "label": "Ammo Crate",
+      "model": "pickups/ammo-pack/model.glb",
+      "scale": 0.58,
+      "offsetY": -0.12
+    },
+    "blood-medkit": {
+      "label": "Medkit",
+      "model": "pickups/optimized/blood-medkit.glb",
+      "scale": 0.55,
+      "offsetY": -0.12
+    },
+    "moon-star": {
+      "label": "Astral Star Talisman",
+      "model": "pickups/optimized/babylon-thunder-sigil.glb",
+      "scale": 0.65,
+      "offsetY": -0.08
+    },
+    "speed-rune": {
+      "label": "Speed Rune",
+      "model": "pickups/speed-rune/model.glb",
+      "scale": 0.64,
+      "offsetY": -0.08
+    },
+    "rage-totem": {
+      "label": "Rage Totem",
+      "model": "pickups/rage-totem/model.glb",
+      "scale": 0.72,
+      "offsetY": -0.14
+    },
+    "shield-charm": {
+      "label": "Shield Charm",
+      "model": "pickups/optimized/shield-charm.glb",
+      "scale": 0.68,
+      "offsetY": -0.08
+    },
+    "lantern-battery": {
+      "label": "Lantern Battery",
+      "model": "pickups/lantern-battery/model.glb",
+      "scale": 1,
+      "offsetY": 0
+    },
+    "scarab-reliquary": {
+      "label": "Scarab Reliquary",
+      "model": "pickups/optimized/egypt-scarab-eye.glb",
+      "scale": 1,
+      "offsetY": 0
+    }
+  },
+  "pickupMap": {
+    "coin": "hex-coin",
+    "ammo": "ammo-crate",
+    "heal": "blood-medkit",
+    "star": "moon-star",
+    "super": "scarab-reliquary",
+    "speedCore": "speed-rune",
+    "boostHaste": "speed-rune",
+    "boostDamage": "rage-totem",
+    "boostShield": "shield-charm",
+    "battery": "lantern-battery",
+    "blessing": "scarab-reliquary"
+  },
+  "weapons": {
+    "bone-knife": {
+      "label": "Bone Knife",
+      "model": "weapons/bone-knife/model.glb",
+      "scale": 0.45,
+      "position": [
+        0.06,
+        -0.03,
+        0.34
+      ],
+      "rotation": [
+        0.35,
+        0.85,
+        0.15
+      ]
+    },
+    "rust-pistol": {
+      "label": "Rust Pistol",
+      "model": "weapons/rust-pistol/model.glb",
+      "scale": 0.45,
+      "position": [
+        0,
+        -0.01,
+        0.22
+      ],
+      "rotation": [
+        0,
+        1.5708,
+        0
+      ]
+    },
+    "player-hands": {
+      "label": "Player Hands",
+      "model": "weapons/player-hands/model.glb",
+      "scale": 0.36,
+      "position": [
+        0.02,
+        -0.2,
+        0.24
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "mark23": {
+      "label": "Mark 23 Animated",
+      "model": "weapons/mark23/model.glb",
+      "scale": 0.011,
+      "position": [
+        -0.118,
+        -1.573,
+        -0.022
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "animated": true
+    },
+    "mark23-hands": {
+      "label": "Mark 23 Hands Only",
+      "model": "weapons/mark23-hands/model.glb",
+      "scale": 0.011,
+      "position": [
+        -0.118,
+        -1.573,
+        -0.022
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "combat-knife": {
+      "label": "Combat Knife (Meshy)",
+      "model": "weapons/combat-knife/model.glb",
+      "scale": 1,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    },
+    "daemon-bane": {
+      "label": "Daemon Bane (Meshy)",
+      "model": "weapons/daemon-bane/model.glb",
+      "scale": 1,
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "weaponMap": {
+    "knife": "bone-knife",
+    "pistol": "mark23",
+    "hands": "player-hands",
+    "daemonBane": "daemon-bane"
+  }
+}

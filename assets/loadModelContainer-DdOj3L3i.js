@@ -1,0 +1,1 @@
+import{b4 as t,T as e,a0 as n}from"./babylon-core-DLU5nSyt.js";import{G as i}from"./babylon-loaders-8jEXFlbv.js";import{o as d,a as l}from"./main-KH37cCMq.js";d(e);n.Configuration={decoder:{url:l("/meshopt_decoder.js")}};function u(o,s,a,{skipMaterials:r=!1}={}){return t(s,a,{rootUrl:o,pluginOptions:{gltf:{animationStartMode:i.NONE,skipMaterials:r}}})}export{u as l};
